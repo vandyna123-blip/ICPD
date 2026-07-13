@@ -1,0 +1,1899 @@
+import React, { useState, useMemo } from 'react';
+import { 
+  LayoutDashboard, 
+  PlusCircle, 
+  ListFilter, 
+  Users, 
+  CheckCircle2, 
+  Clock, 
+  AlertCircle, 
+  TrendingUp, 
+  Coins, 
+  MapPin, 
+  Building2, 
+  FileSpreadsheet, 
+  ChevronRight, 
+  Search, 
+  Download, 
+  Settings, 
+  ShieldAlert,
+  Edit,
+  Trash2,
+  Info,
+  Calendar,
+  Grid,
+  RefreshCw,
+  Sliders,
+  Filter,
+  Save,
+  Check,
+  X,
+  FileDown,
+  Lock,
+  Unlock,
+  Key,
+  UserCheck,
+  Eye,
+  EyeOff,
+  LogOut,
+  UserPlus,
+  ShieldCheck
+} from 'lucide-react';
+
+const DISTRICTS = [
+  "ក្រុងកំពង់ឆ្នាំង", 
+  "ស្រុកបរិបូណ៌", 
+  "ស្រុកជលគិរី", 
+  "ស្រុកកំពង់លែង", 
+  "ស្រុកកំពង់ត្រឡាច", 
+  "ស្រុករលាប្អៀរ", 
+  "ស្រុកសាមគ្គីមានជ័យ", 
+  "ស្រុកទឹកផុស", 
+  "ទូទាំងខេត្ត"
+];
+
+const DEPARTMENTS = [
+  "មន្ទីរកិច្ចការនារី", 
+  "មន្ទីរសុខាភិបាល", 
+  "មន្ទីរអប់រំ យុវជន និងកីឡា", 
+  "មន្ទីរផែនការ", 
+  "មន្ទីរសង្គមកិច្ច អតីតយុទ្ធជន និងយុវនីតិសម្បទា", 
+  "មន្ទីរអភិវឌ្ឍន៍ជនបទ", 
+  "រដ្ឋបាលខេត្ត"
+];
+
+const STRATEGIC_DIRECTIONS = [
+  {
+    id: "SD1",
+    title: "ទិសដៅយុទ្ធសាស្ត្រទី ១ ៖ ពង្រឹងក្របខ័ណ្ឌគតិយុត្តិនិងស្ថាប័នតាមរយៈការជំរុញនិងការចូលរួមអនុវត្តច្បាប់និងលិខិតបទដ្ឋានគតិយុត្តិប្រកបដោយប្រសិទ្ធភាព ឆ្លើយតបទៅនឹងសកម្មភាពអាទិភាពនៃក្របខ័ណ្ឌយុទ្ធសាស្ត្រកម្ពុជា ។",
+    keyMeasure: "វិធានការគន្លឹះទី១៖ ចូលរួមអនុវត្តយុទ្ធសាស្ត្រវិជ្ជមាន ផែនការសកម្មភាពសេដ្ឋកិច្ចថែទាំ ផែនការសកម្មភាពជាតិស្តីពីស្រ្តីសន្តិភាពនិងសន្តិសុខ ច្បាប់និងក្របខ័ណ្ឌច្បាប់ដែលទាក់ទងនឹងការកែលម្អសុខុមាលភាពរបស់ ជនរងគ្រោះ និងជនងាយរងគ្រោះ និងក្របខ័ណ្ឌច្បាប់ផ្សេងទៀតដែលគាំទ្រការផ្តល់សេវាដោះស្រាយទាន់ពេលវេលានិងមានប្រសិទ្ធភាពនៅថ្នាក់ក្រោមជាតិ ដល់ជនងាយរងគ្រោះរួមទាំងស្ត្រីនិងក្មេងស្រី។"
+  }
+];
+
+const INITIAL_ACTIVITIES = [
+  {
+    id: "ACT-001",
+    strategicDirectionId: "SD1",
+    activityKh: "ចូលរួមអនុវត្តយុទ្ធសាស្ត្រវិជ្ជមាន ផែនការសកម្មភាពសេដ្ឋកិច្ចថែទាំ ផែនការសកម្មភាពជាតិស្តីពីស្រ្តីសន្តិភាពនិងសន្តិសុខ និងគាំទ្រសេវាដោះស្រាយទាន់ពេល",
+    indicatorKh: "ចំនួនស្ត្រី និងក្មេងស្រីងាយរងគ្រោះទទួលបានសេវាគាំពារសង្គម និងកិច្ចសង្គ្រោះផ្នែកច្បាប់ទាន់ពេលវេលា និងមានប្រសិទ្ធភាព",
+    coordinatingDept: "មន្ទីរកិច្ចការនារី",
+    unitKh: "នាក់",
+    baselineVal: "៥,០០០ (២០២៥)",
+    totalTarget: "២៥,០០០",
+    y2026: "៧,០០០",
+    y2027: "១០,០០០",
+    y2028: "១៤,០០០",
+    y2029: "១៩,០០០",
+    y2030: "២៥,០០០",
+    estimatedCostMillionRiels: 350, 
+    district: "ស្រុករលាប្អៀរ",
+    status: "in_progress",
+    progressPercent: 45,
+    responsiblePerson: "លោកស្រី ម៉ែន សុភី",
+    remarks: "យុទ្ធនាការត្រូវបានផ្សព្វផ្សាយជាប្រចាំខែតាមសហគមន៍គោលដៅ"
+  },
+  {
+    id: "ACT-002",
+    strategicDirectionId: "SD1",
+    activityKh: "រៀបចំវគ្គបណ្តុះបណ្តាល និងពង្រឹងសមត្ថភាពដល់អាជ្ញាធរមូលដ្ឋាន លើច្បាប់ការពារស្ត្រី និងទប់ស្កាត់អំពើហិង្សា",
+    indicatorKh: "ចំនួនមន្ត្រីឃុំ សង្កាត់ និងសមត្ថកិច្ចមូលដ្ឋាន ដែលបានឆ្លងកាត់ការបណ្តុះបណ្តាលក្របខ័ណ្ឌច្បាប់ការពារ",
+    coordinatingDept: "មន្ទីរកិច្ចការនារី",
+    unitKh: "នាក់",
+    baselineVal: "១៥០ (២០២៥)",
+    totalTarget: "៨០០",
+    y2026: "២០០",
+    y2027: "៣៥០",
+    y2028: "៥០០",
+    y2029: "៦៥០",
+    y2030: "៨០០",
+    estimatedCostMillionRiels: 120,
+    district: "ក្រុងកំពង់ឆ្នាំង",
+    status: "completed",
+    progressPercent: 100,
+    responsiblePerson: "កញ្ញា សុខ លីដា",
+    remarks: "បានរៀបចំវគ្គដំបូងសម្រាប់រដ្ឋបាលក្រុងកំពង់ឆ្នាំងរួចរាល់"
+  },
+  {
+    id: "ACT-003",
+    strategicDirectionId: "SD1",
+    activityKh: "បង្កើតមជ្ឈមណ្ឌលប្រឹក្សាយោបល់ចល័ត និងផ្តល់កិច្ចសង្គ្រោះបឋមផ្លូវចិត្តជូនជនងាយរងគ្រោះនៅថ្នាក់ក្រោមជាតិ",
+    indicatorKh: "ចំនួនសេវាប្រឹក្សាយោបល់ចល័តដែលបានចុះប្រតិបត្តិការផ្ទាល់ដល់មូលដ្ឋានដាច់ស្រយាល",
+    coordinatingDept: "មន្ទីរសង្គមកិច្ច អតីតយុទ្ធជន និងយុវនីតិសម្បទា",
+    unitKh: "លើក",
+    baselineVal: "១២ (២០២៥)",
+    totalTarget: "៦០",
+    y2026: "១២",
+    y2027: "២៤",
+    y2028: "៣៦",
+    y2029: "៤៨",
+    y2030: "៦០",
+    estimatedCostMillionRiels: 240,
+    district: "ស្រុកបរិបូណ៌",
+    status: "planned",
+    progressPercent: 10,
+    responsiblePerson: "លោក ហ៊ិន សារ៉ាត",
+    remarks: "កំពុងរៀបចំផែនការ និងកញ្ចប់ថវិកាសហការជាមួយដៃគូអភិវឌ្ឍន៍"
+  }
+];
+
+const INITIAL_USERS_DB = [
+  { id: "U-001", name: "ឌន វណ្ណឌីណា", role: "admin", entity: "មន្ទីរផែនការខេត្តកំពង់ឆ្នាំង", district: "ទូទាំងខេត្ត", department: "មន្ទីរផែនការ", username: "admin", password: "123", status: "active", note: "គណនីអ្នកគ្រប់គ្រងប្រព័ន្ធជាន់ខ្ពស់ (មន្ទីរផែនការ)" },
+  { id: "U-002", name: "អ៊ឹម សារឿន", role: "district", entity: "រដ្ឋបាលស្រុករលាប្អៀរ", district: "ស្រុករលាប្អៀរ", department: "គ្រប់វិស័យមូលដ្ឋាន", username: "roleapier", password: "111", status: "active", note: "គណនីមន្ត្រីរដ្ឋបាលស្រុករលាប្អៀរ" },
+  { id: "U-003", name: "លោកស្រី ម៉ែន សុភី", role: "department", entity: "មន្ទីរកិច្ចការនារីខេត្តកំពង់ឆ្នាំង", district: "ទូទាំងខេត្ត", department: "មន្ទីរកិច្ចការនារី", username: "womendept", password: "222", status: "active", note: "គណនីមន្ត្រីបង្គោលមន្ទីរកិច្ចការនារី" },
+  { id: "U-004", name: "លោក សុខ ផល្លា", role: "department", entity: "មន្ទីរសុខាភិបាលខេត្តកំពង់ឆ្នាំង", district: "ទូទាំងខេត្ត", department: "មន្ទីរសុខាភិបាល", username: "healthdept", password: "333", status: "active", note: "គណនីមន្ត្រីបង្គោលមន្ទីរសុខាភិបាល" },
+  { id: "U-005", name: "លោក ឡាយ គីមស្រ៊ុន", role: "district", entity: "រដ្ឋបាលស្រុកបរិបូណ៌", district: "ស្រុកបរិបូណ៌", department: "គ្រប់វិស័យមូលដ្ឋាន", username: "boribor", password: "444", status: "active", note: "គណនីមន្ត្រីរដ្ឋបាលស្រុកបរិបូណ៌" },
+  { id: "U-006", name: "លោក ឃួន សៅរ៉េត", role: "district", entity: "រដ្ឋបាលក្រុងកំពង់ឆ្នាំង", district: "ក្រុងកំពង់ឆ្នាំង", department: "គ្រប់វិស័យមូលដ្ឋាន", username: "kpchhnang", password: "555", status: "active", note: "គណនីមន្ត្រីរដ្ឋបាលក្រុងកំពង់ឆ្នាំង" }
+];
+
+export default function App() {
+  const [activities, setActivities] = useState(INITIAL_ACTIVITIES);
+  const [activeTab, setActiveTab] = useState('excel-view'); 
+  const [usersDb, setUsersDb] = useState(INITIAL_USERS_DB);
+  
+  // Auth states (Default with Super Admin គឹម សុជាតិ)
+  const [currentUser, setCurrentUser] = useState(INITIAL_USERS_DB[0]); 
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [loginUsername, setLoginUsername] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Admin user management states
+  const [editingUserId, setEditingUserId] = useState(null);
+  const [userForm, setUserForm] = useState({
+    name: "",
+    role: "department",
+    entity: "",
+    district: DISTRICTS[0],
+    department: DEPARTMENTS[0],
+    username: "",
+    password: "",
+    status: "active",
+    note: ""
+  });
+
+  // Table edit states
+  const [editingCell, setEditingCell] = useState(null); 
+  const [tempCellValue, setTempCellValue] = useState('');
+  
+  // Search & Filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterDistrict, setFilterDistrict] = useState('all');
+  const [filterDept, setFilterDept] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
+
+  // Toast System
+  const [toast, setToast] = useState(null);
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 4000);
+  };
+
+  const handleOpenLoginModal = () => {
+    setLoginUsername('');
+    setLoginPassword('');
+    setLoginModalOpen(true);
+  };
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    const user = usersDb.find(u => u.username.toLowerCase() === loginUsername.trim().toLowerCase() && u.password === loginPassword);
+    
+    if (!user) {
+      showToast("ឈ្មោះគណនី ឬលេខសម្ងាត់មិនត្រឹមត្រូវឡើយ!", "error");
+      return;
+    }
+
+    if (user.status !== 'active') {
+      showToast("គណនីនេះត្រូវបានផ្អាកជាបណ្តោះអាសន្នដោយអ្នកគ្រប់គ្រង!", "error");
+      return;
+    }
+
+    setCurrentUser(user);
+    setLoginModalOpen(false);
+    showToast(`ស្វាគមន៍មកកាន់ប្រព័ន្ធ! លោកអ្នកបានចូលប្រើប្រាស់ជា៖ ${user.entity}`, "success");
+  };
+
+  const handleLogout = () => {
+    setCurrentUser({
+      name: "ភ្ញៀវសាកសួរព័ត៌មាន",
+      role: "guest",
+      entity: "សាធារណជន (មើលបានតែទិន្នន័យ)",
+      district: "ទូទាំងខេត្ត",
+      department: "គ្មាន"
+    });
+    // Fallback tab if they are currently on restricted tab
+    setActiveTab('excel-view');
+    showToast("បានចាកចេញពីគណនីរួចរាល់! ប្រព័ន្ធស្ថិតក្នុងស្ថានភាពមើលបានតែទិន្នន័យ។", "info");
+  };
+
+  const handleStartCellEdit = (id, field, value, act) => {
+    if (currentUser.role === 'guest') {
+      showToast("សូមចូលប្រើប្រាស់ប្រព័ន្ធ (Login) ដើម្បីមានសិទ្ធិកែសម្រួលទិន្នន័យ!", "error");
+      return;
+    }
+    
+    if (currentUser.role === 'district' && act.district !== currentUser.district) {
+      showToast(`សិទ្ធិមិនគ្រប់គ្រាន់! លោកអ្នកអាចកែសម្រួលបានតែកិច្ចការក្នុងដែនរដ្ឋបាល ${currentUser.district} ប៉ុណ្ណោះ។`, "error");
+      return;
+    }
+
+    if (currentUser.role === 'department' && act.coordinatingDept !== currentUser.department) {
+      showToast(`សិទ្ធិមិនគ្រប់គ្រាន់! លោកអ្នកអាចកែសម្រួលបានតែគម្រោងដែល ${currentUser.department} ទទួលបន្ទុកប៉ុណ្ណោះ។`, "error");
+      return;
+    }
+
+    setEditingCell({ id, field });
+    setTempCellValue(value);
+  };
+
+  const handleSaveCellEdit = (id, field) => {
+    setActivities(prev => prev.map(act => {
+      if (act.id === id) {
+        let parsedValue = tempCellValue;
+        if (field === 'estimatedCostMillionRiels') {
+          parsedValue = parseFloat(tempCellValue) || 0;
+        } else if (field === 'progressPercent') {
+          parsedValue = Math.min(100, Math.max(0, parseInt(tempCellValue) || 0));
+        }
+        return { ...act, [field]: parsedValue };
+      }
+      return act;
+    }));
+    setEditingCell(null);
+    showToast("បានរក្សាទុកការកែប្រែដោយជោគជ័យ!", "success");
+  };
+
+  const handleGeneratePassword = () => {
+    if (currentUser.role !== 'admin') {
+      showToast("សិទ្ធិត្រូវបានបដិសេធ!", "error");
+      return;
+    }
+    const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    let randPass = "";
+    for (let i = 0; i < 6; i++) {
+      randPass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setUserForm({ ...userForm, password: randPass });
+    showToast(`បានបង្កើតលេខសម្ងាត់ចៃដន្យ៖ ${randPass}`, "info");
+  };
+
+  const handleAddOrUpdateUser = (e) => {
+    e.preventDefault();
+    if (currentUser.role !== 'admin') {
+      showToast("មានតែអ្នកគ្រប់គ្រងជាន់ខ្ពស់ (Super Admin) ប៉ុណ្ណោះដែលអាចរៀបចំសិទ្ធិបាន!", "error");
+      return;
+    }
+
+    if (!userForm.name || !userForm.username || !userForm.password || !userForm.entity) {
+      showToast("សូមបំពេញឈ្មោះ, ឈ្មោះគណនី, លេខសម្ងាត់ និងស្ថាប័នឱ្យបានត្រឹមត្រូវ!", "error");
+      return;
+    }
+
+    if (editingUserId) {
+      // Update existing user
+      setUsersDb(prev => prev.map(u => u.id === editingUserId ? { ...userForm, id: editingUserId } : u));
+      showToast("បានកែសម្រួលគណនីមន្ត្រី និងលេខសម្ងាត់រួចរាល់!", "success");
+      setEditingUserId(null);
+    } else {
+      // Check duplicate username
+      if (usersDb.some(u => u.username.toLowerCase() === userForm.username.toLowerCase())) {
+        showToast("ឈ្មោះគណនី (Username) នេះមានរួចមកហើយ!", "error");
+        return;
+      }
+      // Create new user
+      const newUser = {
+        ...userForm,
+        id: `U-${Math.floor(100 + Math.random() * 900)}`
+      };
+      setUsersDb([...usersDb, newUser]);
+      showToast("បានបង្កើតគណនី និងលេខសម្ងាត់ថ្មីដោយជោគជ័យ!", "success");
+    }
+
+    // Reset user form
+    setUserForm({
+      name: "",
+      role: "department",
+      entity: "",
+      district: DISTRICTS[0],
+      department: DEPARTMENTS[0],
+      username: "",
+      password: "",
+      status: "active",
+      note: ""
+    });
+  };
+
+  const handleEditUser = (user) => {
+    if (currentUser.role !== 'admin') {
+      showToast("សិទ្ធិត្រូវបានបដិសេធ!", "error");
+      return;
+    }
+    setEditingUserId(user.id);
+    setUserForm({ ...user });
+  };
+
+  const handleDeleteUser = (id, uName) => {
+    if (currentUser.role !== 'admin') {
+      showToast("សិទ្ធិត្រូវបានបដិសេធ!", "error");
+      return;
+    }
+    if (id === currentUser.id) {
+      showToast("អ្នកមិនអាចលុបគណនីដែលកំពុងប្រើប្រាស់បានឡើយ!", "error");
+      return;
+    }
+    if (window.confirm(`តើអ្នកពិតជាចង់លុបគណនីរបស់មន្ត្រី « ${uName} » នេះចេញពីប្រព័ន្ធមែនទេ?`)) {
+      setUsersDb(prev => prev.filter(u => u.id !== id));
+      showToast("បានលុបគណនីមន្ត្រីដោយជោគជ័យ!", "success");
+    }
+  };
+
+  const handleExportMockExcel = () => {
+    showToast("កំពុងរៀបចំ និងទាញយកឯកសារ «ម៉ាទ្រីស(ICPD)_2.xlsx»...", "info");
+    setTimeout(() => {
+      showToast("ការទាញយកជោគជ័យ! ព័ត៌មានយុទ្ធសាស្ត្រខេត្តកំពង់ឆ្នាំង ត្រូវបាននាំចេញរួចរាល់។", "success");
+    }, 1500);
+  };
+
+  const [formInput, setFormInput] = useState({
+    strategicDirectionId: "SD1",
+    activityKh: "",
+    indicatorKh: "",
+    coordinatingDept: DEPARTMENTS[0],
+    unitKh: "នាក់",
+    baselineVal: "",
+    totalTarget: "",
+    y2026: "",
+    y2027: "",
+    y2028: "",
+    y2029: "",
+    y2030: "",
+    estimatedCostMillionRiels: "",
+    district: DISTRICTS[0],
+    status: "planned",
+    progressPercent: 0,
+    responsiblePerson: "",
+    remarks: ""
+  });
+
+  const [editingId, setEditingId] = useState(null);
+
+  const handleAddOrUpdateRow = (e) => {
+    e.preventDefault();
+    if (currentUser.role === 'guest') {
+      showToast("សូមចូលប្រើប្រាស់គណនីជាមុនសិន!", "error");
+      return;
+    }
+
+    if (!formInput.activityKh || !formInput.indicatorKh || !formInput.estimatedCostMillionRiels) {
+      showToast("សូមបំពេញព័ត៌មានចាំបាច់៖ សកម្មភាព, សូចនាករ និងតម្លៃប៉ាន់ស្មាន!", "error");
+      return;
+    }
+
+    const itemData = {
+      ...formInput,
+      id: editingId || `ACT-${Math.floor(100 + Math.random() * 900)}`,
+      estimatedCostMillionRiels: parseFloat(formInput.estimatedCostMillionRiels) || 0,
+      progressPercent: parseInt(formInput.progressPercent) || 0,
+      district: currentUser.role === 'district' ? currentUser.district : formInput.district,
+      coordinatingDept: currentUser.role === 'department' ? currentUser.department : formInput.coordinatingDept,
+    };
+
+    if (editingId) {
+      setActivities(prev => prev.map(a => a.id === editingId ? itemData : a));
+      showToast("បានធ្វើបច្ចុប្បន្នភាពទិន្នន័យគម្រោងដោយជោគជ័យ!", "success");
+      setEditingId(null);
+    } else {
+      setActivities([itemData, ...activities]);
+      showToast("បានបញ្ចូលសកម្មភាពថ្មី ទៅក្នុងម៉ាទ្រីសយុទ្ធសាស្ត្ររួចរាល់!", "success");
+    }
+
+    // Reset input fields
+    setFormInput({
+      strategicDirectionId: "SD1",
+      activityKh: "",
+      indicatorKh: "",
+      coordinatingDept: currentUser.role === 'department' ? currentUser.department : DEPARTMENTS[0],
+      unitKh: "នាក់",
+      baselineVal: "",
+      totalTarget: "",
+      y2026: "",
+      y2027: "",
+      y2028: "",
+      y2029: "",
+      y2030: "",
+      estimatedCostMillionRiels: "",
+      district: currentUser.role === 'district' ? currentUser.district : DISTRICTS[0],
+      status: "planned",
+      progressPercent: 0,
+      responsiblePerson: "",
+      remarks: ""
+    });
+    setActiveTab('excel-view');
+  };
+
+  const handleEditRowForm = (act) => {
+    if (currentUser.role === 'guest') {
+      showToast("សូមចូលប្រើប្រាស់ប្រព័ន្ធ (Login) ដើម្បីកែសម្រួលលម្អិត!", "error");
+      return;
+    }
+
+    if (currentUser.role === 'district' && act.district !== currentUser.district) {
+      showToast(`សិទ្ធិមិនគ្រប់គ្រាន់! លោកអ្នកអាចកែសម្រួលបានតែកិច្ចការក្នុងដែនរដ្ឋបាល ${currentUser.district} ប៉ុណ្ណោះ។`, "error");
+      return;
+    }
+    if (currentUser.role === 'department' && act.coordinatingDept !== currentUser.department) {
+      showToast(`សិទ្ធិមិនគ្រប់គ្រាន់! លោកអ្នកអាចកែសម្រួលបានតែគម្រោងដែល ${currentUser.department} ទទួលបន្ទុកប៉ុណ្ណោះ។`, "error");
+      return;
+    }
+
+    setEditingId(act.id);
+    setFormInput({
+      ...act,
+      estimatedCostMillionRiels: act.estimatedCostMillionRiels.toString()
+    });
+    setActiveTab('input');
+  };
+
+  const handleDeleteRow = (id, act) => {
+    if (currentUser.role === 'guest') {
+      showToast("សូមចូលប្រើប្រាស់ប្រព័ន្ធជាមុនសិន!", "error");
+      return;
+    }
+
+    if (currentUser.role === 'district' && act.district !== currentUser.district) {
+      showToast("សិទ្ធិមិនគ្រប់គ្រាន់ក្នុងការលុបគម្រោងរបស់រដ្ឋបាលស្រុកផ្សេង!", "error");
+      return;
+    }
+    if (currentUser.role === 'department' && act.coordinatingDept !== currentUser.department) {
+      showToast("សិទ្ធិមិនគ្រប់គ្រាន់ក្នុងការលុបគម្រោងរបស់មន្ទីរវិស័យផ្សេង!", "error");
+      return;
+    }
+
+    if (window.confirm("តើអ្នកពិតជាចង់លុបជួរដេកសកម្មភាពនេះ ចេញពីប្រព័ន្ធគំរូ ម៉ាទ្រីស(ICPD)_2.xlsx មែនទេ?")) {
+      setActivities(prev => prev.filter(a => a.id !== id));
+      showToast("បានលុបជួរដេកទិន្នន័យដោយជោគជ័យ!", "success");
+    }
+  };
+
+  const filteredActivities = useMemo(() => {
+    return activities.filter(act => {
+      const matchSearch = 
+        act.activityKh.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        act.indicatorKh.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        act.coordinatingDept.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        act.id.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchDistrict = filterDistrict === 'all' || act.district === filterDistrict;
+      const matchDept = filterDept === 'all' || act.coordinatingDept === filterDept;
+      const matchStatus = filterStatus === 'all' || act.status === filterStatus;
+
+      return matchSearch && matchDistrict && matchDept && matchStatus;
+    });
+  }, [activities, searchQuery, filterDistrict, filterDept, filterStatus]);
+
+  const dashboardStats = useMemo(() => {
+    const totalCost = filteredActivities.reduce((sum, a) => sum + a.estimatedCostMillionRiels, 0);
+    const completedCount = filteredActivities.filter(a => a.status === 'completed').length;
+    const inProgressCount = filteredActivities.filter(a => a.status === 'in_progress').length;
+    const plannedCount = filteredActivities.filter(a => a.status === 'planned').length;
+    
+    const avgProgress = filteredActivities.length > 0 
+      ? Math.round(filteredActivities.reduce((sum, a) => sum + a.progressPercent, 0) / filteredActivities.length)
+      : 0;
+
+    return {
+      totalCost,
+      completedCount,
+      inProgressCount,
+      plannedCount,
+      avgProgress,
+      totalCount: filteredActivities.length
+    };
+  }, [filteredActivities]);
+
+  return (
+    <div className="min-h-screen bg-slate-100 text-slate-800 font-sans flex flex-col antialiased">
+      
+      {/* HEADER SECTION */}
+      {}
+      <header className="bg-gradient-to-r from-[#1e293b] via-[#0f172a] to-[#1e293b] text-white shadow-xl border-b border-slate-700/50 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-24">
+            
+            {/* Title & Info */}
+            <div className="flex items-center space-x-3.5">
+              <div className="p-3 bg-teal-600 rounded-xl shadow-inner border border-teal-500/20">
+                <FileSpreadsheet className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <div className="flex items-center space-x-2">
+                  <h1 className="text-base sm:text-lg font-extrabold leading-tight tracking-wide text-slate-100">
+                    ប្រព័ន្ធគ្រប់គ្រង និងតាមដានរបាយការណ៍សកម្មភាពដើម្បីអនុវត្តក្របខណ្ឌយុទ្ធសាស្រ្តកម្ពុជា ២០២៤-២០៣០ របស់មន្ទីរផែនការខេត្តកំពង់ឆ្នាំង
+                  </h1>
+                  <span className="hidden sm:inline-block bg-teal-500/20 text-teal-300 text-[10px] px-2 py-0.5 rounded border border-teal-500/30 font-semibold font-mono">
+                    Template: ម៉ាទ្រីស(ICPD)_2.xlsx
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300 font-medium mt-0.5">
+                  ឧបករណ៍បន្សំនឹងក្របខ័ណ្ឌយុទ្ធសាស្ត្រកម្ពុជា និងសូចនាករគន្លឹះ ICPD ថ្នាក់ក្រោមជាតិ គ្រប់គ្រងដោយមន្ទីរផែនការខេត្តកំពង់ឆ្នាំង
+                </p>
+              </div>
+            </div>
+
+            {/* Login Status & Safe Logout Area */}
+            <div className="flex items-center space-x-2.5">
+              {currentUser.role === 'guest' ? (
+                <button
+                  onClick={handleOpenLoginModal}
+                  className="flex items-center space-x-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-teal-700/20"
+                >
+                  <Lock className="w-4 h-4" />
+                  <span>ចូលប្រើប្រព័ន្ធ (Login)</span>
+                </button>
+              ) : (
+                <div className="flex items-center space-x-2 bg-slate-800/80 p-2 rounded-xl border border-slate-700/40">
+                  <div className="px-2 text-right">
+                    <p className="text-[10px] text-slate-400 font-bold">គណនីសកម្ម</p>
+                    <p className="text-xs font-extrabold text-teal-400">{currentUser.name}</p>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="p-2 hover:bg-rose-500/10 text-rose-400 rounded-lg transition-all border border-slate-700 hover:border-rose-500/30"
+                    title="ចាកចេញពីគណនី (Logout)"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+
+          </div>
+        </div>
+
+        {/* User Context Information Bar */}
+        <div className="bg-[#0f172a]/95 border-t border-slate-800 text-xs text-slate-300 px-4 py-2.5">
+          <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div className="flex items-center space-x-2 flex-wrap">
+              <span className={`inline-block w-2.5 h-2.5 rounded-full ${currentUser.role !== 'guest' ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'}`}></span>
+              <span className="font-semibold text-slate-200">
+                អត្តសញ្ញាណ៖ <strong className="text-teal-300">{currentUser.entity}</strong>
+              </span>
+              <span className="text-slate-600">|</span>
+              <span>ដែនសមត្ថកិច្ច៖ <strong className="text-sky-300">{currentUser.district}</strong></span>
+              <span className="text-slate-600">|</span>
+              <span>មន្ទីរជំនាញ៖ <strong className="text-indigo-300">{currentUser.department}</strong></span>
+              
+              {currentUser.role !== 'admin' && currentUser.role !== 'guest' && (
+                <>
+                  <span className="text-slate-600">|</span>
+                  <span className="bg-amber-950/60 text-amber-300 px-2.5 py-0.5 rounded border border-amber-800/40 text-[10px] font-bold">
+                    {currentUser.role === 'district' ? 'កែសម្រួលបានតែស្រុកសាមី' : 'កែសម្រួលបានតែមន្ទីរសាមី'}
+                  </span>
+                </>
+              )}
+              {currentUser.role === 'guest' && (
+                <>
+                  <span className="text-slate-600">|</span>
+                  <span className="bg-rose-950/60 text-rose-300 px-2.5 py-0.5 rounded border border-rose-800/40 text-[10px] font-bold">
+                    មើលបានតែទិន្នន័យ (Read-Only)
+                  </span>
+                </>
+              )}
+            </div>
+            <div className="flex items-center space-x-3 text-slate-300 font-mono text-[11px]">
+              <span className="text-teal-400">ទម្រង់បញ្ចូលទិន្នន័យផ្លូវការស្របតាម image_01a3dc.png</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Floating Toast System Alerts */}
+      {toast && (
+        <div className="fixed top-28 right-6 z-50 max-w-md animate-slide-in">
+          <div className={`p-4 rounded-xl shadow-2xl flex items-start space-x-3 text-white border ${
+            toast.type === 'error' ? 'bg-rose-600 border-rose-500' : 
+            toast.type === 'info' ? 'bg-sky-800 border-sky-700' : 'bg-emerald-600 border-emerald-500'
+          }`}>
+            <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-extrabold text-xs">ប្រព័ន្ធដំណឹង</p>
+              <p className="text-xs mt-0.5 opacity-90 font-medium leading-relaxed">{toast.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MAIN CONTAINER */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full flex flex-col md:flex-row gap-6">
+        
+        {/* SIDEBAR NAVIGATION */}
+        {}
+        <aside className="w-full md:w-64 flex-shrink-0">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 sticky top-36 space-y-4">
+            <div>
+              <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-3 px-2">មឺនុយមេ / NAVIGATION</p>
+              <nav className="space-y-1">
+                
+                <button 
+                  onClick={() => setActiveTab('excel-view')}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${activeTab === 'excel-view' ? 'bg-teal-50 text-teal-800 border border-teal-200/50' : 'text-slate-600 hover:bg-slate-50'}`}
+                >
+                  <div className="flex items-center space-x-2">
+                    <Grid className="h-4 w-4 text-teal-600" />
+                    <span>តារាង ម៉ាទ្រីស(ICPD)_2</span>
+                  </div>
+                  <span className="bg-teal-100 text-teal-800 text-[10px] px-2 py-0.5 rounded-full font-bold">{activities.length}</span>
+                </button>
+
+                <button 
+                  onClick={() => setActiveTab('dashboard')}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${activeTab === 'dashboard' ? 'bg-teal-50 text-teal-800 border border-teal-200/50' : 'text-slate-600 hover:bg-slate-50'}`}
+                >
+                  <div className="flex items-center space-x-2">
+                    <LayoutDashboard className="h-4 w-4 text-sky-600" />
+                    <span>ផ្ទាំងគ្រប់គ្រង (Dashboard)</span>
+                  </div>
+                  <ChevronRight className="h-3.5 w-3.5 opacity-60" />
+                </button>
+
+                <button 
+                  onClick={() => {
+                    setEditingId(null);
+                    setActiveTab('input');
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${activeTab === 'input' ? 'bg-teal-50 text-teal-800 border border-teal-200/50' : 'text-slate-600 hover:bg-slate-50'}`}
+                >
+                  <div className="flex items-center space-x-2">
+                    <PlusCircle className="h-4 w-4 text-emerald-600" />
+                    <span>{editingId ? "កែសម្រួលគម្រោង" : "បន្ថែមសកម្មភាពថ្មី"}</span>
+                  </div>
+                  <ChevronRight className="h-3.5 w-3.5 opacity-60" />
+                </button>
+
+                {/* Account tab item with Lock Indicator if not Super Admin */}
+                <button 
+                  onClick={() => setActiveTab('settings')}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                    activeTab === 'settings' ? 'bg-indigo-50 text-indigo-800 border border-indigo-200/50' : 'text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center space-x-2">
+                    {currentUser.role === 'admin' ? (
+                      <Users className="h-4 w-4 text-indigo-600" />
+                    ) : (
+                      <Lock className="h-4 w-4 text-rose-500" />
+                    )}
+                    <span className={currentUser.role !== 'admin' ? 'text-slate-400' : ''}>គណនី & លេខសម្ងាត់មន្ទីរ</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    {currentUser.role === 'admin' ? (
+                      <span className="bg-indigo-100 text-indigo-800 text-[9px] px-1.5 py-0.2 rounded-full font-bold">
+                        {usersDb.length}
+                      </span>
+                    ) : (
+                      <span className="bg-rose-50 text-rose-700 text-[8px] px-1 rounded font-bold uppercase">Admin Only</span>
+                    )}
+                    <ChevronRight className="h-3.5 w-3.5 opacity-60" />
+                  </div>
+                </button>
+
+              </nav>
+            </div>
+
+            {/* Current user information card */}
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/60 space-y-2">
+              <div className="flex items-center space-x-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                <h4 className="text-xs font-extrabold text-slate-800">សិទ្ធិដំណើរការ</h4>
+              </div>
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                លោកអ្នកចូលប្រើប្រាស់ជា៖ <strong>{currentUser.entity}</strong>។ 
+                {currentUser.role === 'guest' ? ' សូមធ្វើការ Login ដើម្បីបំពេញការងារ។' : ' លោកអ្នកអាចកែសម្រួលទិន្នន័យបានស្របតាមការបែងចែកសិទ្ធិរបស់មន្ទីរជំនាញ និងរដ្ឋបាលក្រុង/ស្រុកសាមី។'}
+              </p>
+            </div>
+
+            {/* Reference info box */}
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/50 space-y-2">
+              <div className="flex items-center space-x-1.5">
+                <FileSpreadsheet className="w-4 h-4 text-teal-600" />
+                <h4 className="text-xs font-black text-slate-800">ម៉ាទ្រីស(ICPD)_2.xlsx</h4>
+              </div>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                រចនាសម្ព័ន្ធជួរឈរ ឯកតា និងតម្លៃប៉ាន់ស្មានគិតជា <strong>លានរៀល</strong> ត្រូវបានធ្វើបច្ចុប្បន្នភាពស្របតាមទម្រង់ផ្លូវការក្នុងរូបភាព <code>image_01a3dc.png</code>។
+              </p>
+            </div>
+
+          </div>
+        </aside>
+
+        {/* MAIN CONTENT PANELS */}
+        <main className="flex-1 min-w-0">
+          
+          {/* TAB 1: EXCEL VIEW SHEET */}
+          {activeTab === 'excel-view' && (
+            <div className="space-y-6">
+              
+              {/* Official Metadata Header Block */}
+              <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="p-2 bg-emerald-50 rounded-xl text-emerald-600 font-bold border border-emerald-100">
+                      <FileSpreadsheet className="w-5 h-5" />
+                    </span>
+                    <div>
+                      <h2 className="text-lg font-black text-slate-900">តារាងបញ្ចូលទិន្នន័យផ្លូវការ (Official Data Entry Form)</h2>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        រចនាឡើងស្របតាមទម្រង់ជួរឈរ និងទិន្នន័យជាក់ស្តែងនៃរូបភាព <code>image_01a3dc.png</code> សម្រាប់ជាធាតុចូលក្នុងរបាយការណ៍ <strong>ម៉ាទ្រីស(ICPD)_2.xlsx</strong>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                  <button 
+                    onClick={handleExportMockExcel}
+                    className="flex items-center space-x-1.5 px-3 py-2 bg-teal-700 hover:bg-teal-800 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-teal-700/10 w-full justify-center md:w-auto"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>ទាញយក Excel ម៉ាទ្រីស(ICPD)_2.xlsx</span>
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setActivities(INITIAL_ACTIVITIES);
+                      showToast("បានកំណត់ទិន្នន័យឡើងវិញតាមគំរូដើម!", "info");
+                    }}
+                    className="flex items-center space-x-1.5 px-3 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition-all w-full justify-center md:w-auto"
+                    title="កំណត់ឡើងវិញ"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>Reset គំរូដើម</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Advanced Search & Filters */}
+              <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <span className="text-xs font-bold text-slate-800 flex items-center">
+                    <Filter className="w-4 h-4 mr-1 text-teal-600" />
+                    ឧបករណ៍ស្វែងរក និងចម្រោះទិន្នន័យរហ័ស
+                  </span>
+                  <span className="text-[11px] text-slate-500 font-medium">រកឃើញគម្រោងចំនួន៖ <strong>{filteredActivities.length}</strong></span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  
+                  {/* Search Bar */}
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+                    <input 
+                      type="text" 
+                      placeholder="ស្វែងរកសកម្មភាព, សូចនាករ..." 
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500 bg-slate-50"
+                    />
+                  </div>
+
+                  {/* Filter District */}
+                  <select 
+                    value={filterDistrict} 
+                    onChange={(e) => setFilterDistrict(e.target.value)}
+                    className="w-full px-2 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none bg-white font-medium text-slate-700"
+                  >
+                    <option value="all">គ្រប់ក្រុង/ស្រុក (ខេត្តកំពង់ឆ្នាំង)</option>
+                    {DISTRICTS.map(dist => <option key={dist} value={dist}>{dist}</option>)}
+                  </select>
+
+                  {/* Filter Department */}
+                  <select 
+                    value={filterDept} 
+                    onChange={(e) => setFilterDept(e.target.value)}
+                    className="w-full px-2 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none bg-white font-medium text-slate-700"
+                  >
+                    <option value="all">គ្រប់មន្ទីរ/ស្ថាប័នសម្របសម្រួល</option>
+                    {DEPARTMENTS.map(dept => <option key={dept} value={dept}>{dept}</option>)}
+                  </select>
+
+                  {/* Filter Status */}
+                  <select 
+                    value={filterStatus} 
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    className="w-full px-2 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none bg-white font-medium text-slate-700"
+                  >
+                    <option value="all">គ្រប់ស្ថានភាព</option>
+                    <option value="planned">បានគ្រោងទុក (Planned)</option>
+                    <option value="in_progress">កំពុងដំណើរការ (In Progress)</option>
+                    <option value="completed">បានបញ្ចប់ (Completed)</option>
+                  </select>
+
+                </div>
+              </div>
+
+              {/* DATA GRID & SHEET TABLE */}
+              {}
+              <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+                <div className="p-4 bg-slate-50/50 border-b border-slate-200 flex justify-between items-center flex-wrap gap-2">
+                  <div className="flex items-center space-x-2 text-xs font-extrabold text-slate-700 uppercase">
+                    <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span>សន្លឹកកិច្ចការ៖ ផែនការសកម្មភាពយុទ្ធសាស្ត្រថ្នាក់ក្រោមជាតិ</span>
+                  </div>
+                  <div className="text-[11px] text-slate-500 font-medium">
+                    <span className="inline-block px-1.5 py-0.5 bg-sky-100 text-sky-800 rounded font-bold mr-1">ណែនាំ៖</span> 
+                    ចុចពីរដង (Double-Click) លើប្រអប់កោសិកា ដើម្បីកែសម្រួលទិន្នន័យរហ័ស
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse min-w-[1500px]">
+                    <thead>
+                      {/* Standard Grid Headers derived directly from image_01a3dc.png */}
+                      <tr className="bg-[#cfd8dc] border-b border-slate-300 text-slate-700 font-extrabold text-[11px] text-center">
+                        <th className="py-4 px-3 border-r border-slate-300 w-80 text-left">សកម្មភាព</th>
+                        <th className="py-4 px-3 border-r border-slate-300 w-80 text-left">សូចនាករ</th>
+                        <th className="py-4 px-3 border-r border-slate-300 w-48 text-left">ស្ថាប័នសម្របសម្រួល</th>
+                        <th className="py-4 px-2 border-r border-slate-300 w-20">ឯកតា</th>
+                        <th className="py-4 px-3 border-r border-slate-300 w-32">តម្លៃសូចនាករ<br />(ឆ្នាំ) លើកមុន<br />ឆ្នាំ២០២៦</th>
+                        <th className="py-4 px-3 border-r border-slate-300 w-28">សរុបដល់<br />ឆ្នាំ២០៣០</th>
+                        <th className="py-4 px-2 border-r border-slate-300 w-16">២០២៦</th>
+                        <th className="py-4 px-2 border-r border-slate-300 w-16">២០២៧</th>
+                        <th className="py-4 px-2 border-r border-slate-300 w-16">២០២៨</th>
+                        <th className="py-4 px-2 border-r border-slate-300 w-16">២០២៩</th>
+                        <th className="py-4 px-2 border-r border-slate-300 w-16">២០៣០</th>
+                        <th className="py-4 px-3 border-r border-slate-300 w-36">តម្លៃប៉ាន់ស្មាន<br />(លានរៀល)</th>
+                        <th className="py-4 px-2 w-20">ជម្រើស</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200">
+                      {STRATEGIC_DIRECTIONS.map((sd) => {
+                        const sdActivities = filteredActivities.filter(act => act.strategicDirectionId === sd.id);
+                        
+                        return (
+                          <React.Fragment key={sd.id}>
+                            {/* Strategic Direction Banner row */}
+                            <tr className="bg-[#eef2f5] font-extrabold text-teal-900 border-y border-slate-300">
+                              <td colSpan={13} className="py-3.5 px-4 text-xs font-bold leading-relaxed text-left">
+                                <span className="bg-teal-700 text-white text-[9px] px-2 py-0.5 rounded-md mr-2">ទិសដៅយុទ្ធសាស្ត្រ</span>
+                                {sd.title}
+                              </td>
+                            </tr>
+                            
+                            {/* Key Measure Banner row */}
+                            <tr className="bg-amber-50/50 text-slate-800 font-semibold border-b border-slate-300 italic">
+                              <td colSpan={13} className="py-3 px-4 text-xs leading-relaxed text-left pl-6">
+                                <span className="bg-amber-600 text-white not-italic text-[9px] px-1.5 py-0.5 rounded-md mr-2">វិធានការគន្លឹះ</span>
+                                {sd.keyMeasure}
+                              </td>
+                            </tr>
+
+                            {/* Activities items listing */}
+                            {sdActivities.length > 0 ? (
+                              sdActivities.map((act) => (
+                                <tr key={act.id} className="hover:bg-slate-50/50 transition-all text-slate-700">
+                                  
+                                  {/* 1. Activity Content */}
+                                  <td 
+                                    onDoubleClick={() => handleStartCellEdit(act.id, 'activityKh', act.activityKh, act)}
+                                    className={`py-3.5 px-3 border-r border-slate-200 text-left align-top font-bold text-slate-800 text-[11.5px] cursor-pointer hover:bg-teal-50/40 ${editingCell?.id === act.id && editingCell?.field === 'activityKh' ? 'bg-teal-50 ring-2 ring-teal-500' : ''}`}
+                                  >
+                                    {editingCell?.id === act.id && editingCell?.field === 'activityKh' ? (
+                                      <textarea 
+                                        value={tempCellValue} 
+                                        onChange={(e) => setTempCellValue(e.target.value)}
+                                        onBlur={() => handleSaveCellEdit(act.id, 'activityKh')}
+                                        className="w-full p-1 border rounded text-xs" 
+                                        rows={3}
+                                        autoFocus
+                                      />
+                                    ) : (
+                                      <div>
+                                        <span>{act.activityKh}</span>
+                                        <div className="mt-1 flex flex-wrap gap-1.5">
+                                          <span className="text-[9px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono font-bold">ID: {act.id}</span>
+                                          <span className="text-[9px] bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded font-bold font-mono">រដ្ឋបាល៖ {act.district}</span>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </td>
+
+                                  {/* 2. Indicator Content */}
+                                  <td 
+                                    onDoubleClick={() => handleStartCellEdit(act.id, 'indicatorKh', act.indicatorKh, act)}
+                                    className={`py-3.5 px-3 border-r border-slate-200 text-left align-top text-[11px] cursor-pointer hover:bg-teal-50/40 ${editingCell?.id === act.id && editingCell?.field === 'indicatorKh' ? 'bg-teal-50 ring-2 ring-teal-500' : ''}`}
+                                  >
+                                    {editingCell?.id === act.id && editingCell?.field === 'indicatorKh' ? (
+                                      <textarea 
+                                        value={tempCellValue} 
+                                        onChange={(e) => setTempCellValue(e.target.value)}
+                                        onBlur={() => handleSaveCellEdit(act.id, 'indicatorKh')}
+                                        className="w-full p-1 border rounded text-xs" 
+                                        rows={3}
+                                        autoFocus
+                                      />
+                                    ) : (
+                                      <span className="text-slate-600 leading-relaxed">{act.indicatorKh}</span>
+                                    )}
+                                  </td>
+
+                                  {/* 3. Coordinating Department */}
+                                  <td className="py-3.5 px-3 border-r border-slate-200 align-top text-left font-semibold text-slate-700 text-[11px]">
+                                    {act.coordinatingDept}
+                                  </td>
+
+                                  {/* 4. Unit */}
+                                  <td 
+                                    onDoubleClick={() => handleStartCellEdit(act.id, 'unitKh', act.unitKh, act)}
+                                    className="py-3.5 px-1 border-r border-slate-200 text-center align-top text-[11px] cursor-pointer hover:bg-teal-50/40"
+                                  >
+                                    {editingCell?.id === act.id && editingCell?.field === 'unitKh' ? (
+                                      <input 
+                                        type="text" 
+                                        value={tempCellValue} 
+                                        onChange={(e) => setTempCellValue(e.target.value)}
+                                        onBlur={() => handleSaveCellEdit(act.id, 'unitKh')}
+                                        className="w-full p-1 border rounded text-xs text-center"
+                                        autoFocus
+                                      />
+                                    ) : (
+                                      <span className="bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-bold">{act.unitKh}</span>
+                                    )}
+                                  </td>
+
+                                  {/* 5. Baseline Prior to 2026 */}
+                                  <td 
+                                    onDoubleClick={() => handleStartCellEdit(act.id, 'baselineVal', act.baselineVal, act)}
+                                    className="py-3.5 px-2 border-r border-slate-200 text-center align-top text-[11px] text-slate-500 cursor-pointer hover:bg-teal-50/40"
+                                  >
+                                    {editingCell?.id === act.id && editingCell?.field === 'baselineVal' ? (
+                                      <input 
+                                        type="text" 
+                                        value={tempCellValue} 
+                                        onChange={(e) => setTempCellValue(e.target.value)}
+                                        onBlur={() => handleSaveCellEdit(act.id, 'baselineVal')}
+                                        className="w-full p-1 border rounded text-xs text-center"
+                                        autoFocus
+                                      />
+                                    ) : (
+                                      <span>{act.baselineVal || "-"}</span>
+                                    )}
+                                  </td>
+
+                                  {/* 6. Total Target to 2030 */}
+                                  <td 
+                                    onDoubleClick={() => handleStartCellEdit(act.id, 'totalTarget', act.totalTarget, act)}
+                                    className="py-3.5 px-2 border-r border-slate-200 text-center align-top font-bold text-slate-900 text-[11.5px] cursor-pointer hover:bg-teal-50/40"
+                                  >
+                                    {editingCell?.id === act.id && editingCell?.field === 'totalTarget' ? (
+                                      <input 
+                                        type="text" 
+                                        value={tempCellValue} 
+                                        onChange={(e) => setTempCellValue(e.target.value)}
+                                        onBlur={() => handleSaveCellEdit(act.id, 'totalTarget')}
+                                        className="w-full p-1 border rounded text-xs text-center"
+                                        autoFocus
+                                      />
+                                    ) : (
+                                      <span>{act.totalTarget}</span>
+                                    )}
+                                  </td>
+
+                                  {/* Year Targets: 2026 to 2030 */}
+                                  {['y2026', 'y2027', 'y2028', 'y2029', 'y2030'].map((year) => (
+                                    <td 
+                                      key={year}
+                                      onDoubleClick={() => handleStartCellEdit(act.id, year, act[year], act)}
+                                      className="py-3.5 px-1 border-r border-slate-200 text-center align-top text-[11px] font-medium text-slate-600 cursor-pointer hover:bg-teal-50/40"
+                                    >
+                                      {editingCell?.id === act.id && editingCell?.field === year ? (
+                                        <input 
+                                          type="text" 
+                                          value={tempCellValue} 
+                                          onChange={(e) => setTempCellValue(e.target.value)}
+                                          onBlur={() => handleSaveCellEdit(act.id, year)}
+                                          className="w-12 p-0.5 border rounded text-xs text-center font-bold"
+                                          autoFocus
+                                        />
+                                      ) : (
+                                        <span>{act[year] || "-"}</span>
+                                      )}
+                                    </td>
+                                  ))}
+
+                                  {/* Estimated Cost in Million Riels */}
+                                  <td 
+                                    onDoubleClick={() => handleStartCellEdit(act.id, 'estimatedCostMillionRiels', act.estimatedCostMillionRiels, act)}
+                                    className="py-3.5 px-3 border-r border-slate-200 text-right align-top font-extrabold text-teal-800 text-[11.5px] cursor-pointer hover:bg-teal-50/40 bg-teal-50/10"
+                                  >
+                                    {editingCell?.id === act.id && editingCell?.field === 'estimatedCostMillionRiels' ? (
+                                      <input 
+                                        type="number" 
+                                        value={tempCellValue} 
+                                        onChange={(e) => setTempCellValue(e.target.value)}
+                                        onBlur={() => handleSaveCellEdit(act.id, 'estimatedCostMillionRiels')}
+                                        className="w-20 p-1 border rounded text-xs text-right font-bold"
+                                        autoFocus
+                                      />
+                                    ) : (
+                                      <span>{act.estimatedCostMillionRiels.toLocaleString()} លាន</span>
+                                    )}
+                                  </td>
+
+                                  {/* Actions */}
+                                  <td className="py-3.5 px-2 text-center align-top">
+                                    <div className="flex items-center justify-center space-x-1.5">
+                                      <button 
+                                        onClick={() => handleEditRowForm(act)}
+                                        className="p-1 hover:bg-teal-50 text-slate-500 hover:text-teal-700 rounded transition-all"
+                                        title="កែសម្រួលលម្អិត"
+                                      >
+                                        <Edit className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button 
+                                        onClick={() => handleDeleteRow(act.id, act)}
+                                        className="p-1 hover:bg-rose-50 text-slate-500 hover:text-rose-700 rounded transition-all"
+                                        title="លុប"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
+                                  </td>
+
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan={13} className="py-12 text-center bg-slate-50/30">
+                                  <AlertCircle className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                                  <h4 className="font-extrabold text-slate-700">គ្មានទិន្នន័យត្រូវបានកត់ត្រាក្រោមទិសដៅយុទ្ធសាស្ត្រនេះឡើយ</h4>
+                                  <p className="text-xs text-slate-400 mt-1">សូមបំពេញ ឬផ្លាស់ប្តូរតម្រងព័ត៌មានរបស់អ្នក</p>
+                                </td>
+                              </tr>
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Grid Footer Summary */}
+                <div className="bg-slate-100 border-t border-slate-300 px-4 py-3 flex justify-between items-center text-xs text-slate-600">
+                  <div className="flex items-center space-x-3">
+                    <span>សន្លឹកបច្ចុប្បន្ន៖ <strong>១. ម៉ាទ្រីសសរុប (ទិសដៅទី១)</strong></span>
+                    <span>•</span>
+                    <span>យោងតាមឯកសារ៖ <strong className="text-teal-800">ម៉ាទ្រីស(ICPD)_2.xlsx</strong></span>
+                  </div>
+                  <div className="font-bold text-slate-800 text-[12.5px]">
+                    សរុបថវិកាប៉ាន់ស្មាន៖ <span className="text-teal-700 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-200 font-mono">{filteredActivities.reduce((sum, a) => sum + a.estimatedCostMillionRiels, 0).toLocaleString()} លានរៀល</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {/* TAB 2: ANALYTICAL DASHBOARD */}
+          {}
+          {activeTab === 'dashboard' && (
+            <div className="space-y-6">
+              
+              <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                <h2 className="text-lg font-black text-slate-900">ផ្ទាំងសង្ខេបរបាយការណ៍ និងវឌ្ឍនភាពការងារខេត្តកំពង់ឆ្នាំង</h2>
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                  ទិន្នន័យការសម្រេចការងារ និងការវិភាគការចំណាយប៉ាន់ស្មានគិតជា **លានរៀល** សម្រាប់ការងារអនុវត្តយុទ្ធសាស្ត្រជាតិឆ្នាំ២០២៤-២០៣០។
+                </p>
+              </div>
+
+              {/* KPI Widgets */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                  <div className="p-3 bg-teal-50 text-teal-600 rounded-xl border border-teal-100">
+                    <TrendingUp className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">សកម្មភាពសរុបក្នុងប្រព័ន្ធ</p>
+                    <p className="text-2xl font-black text-slate-800">{dashboardStats.totalCount}</p>
+                    <p className="text-[11px] text-slate-500 font-medium">សកម្មភាព/គម្រោង</p>
+                  </div>
+                </div>
+
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                  <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100">
+                    <Coins className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">តម្លៃប៉ាន់ស្មានសរុប</p>
+                    <p className="text-2xl font-black text-slate-800">{dashboardStats.totalCost.toLocaleString()}</p>
+                    <p className="text-[11px] text-emerald-600 font-semibold font-mono">លានរៀល (M Riels)</p>
+                  </div>
+                </div>
+
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                  <div className="p-3 bg-sky-50 text-sky-600 rounded-xl border border-sky-100">
+                    <CheckCircle2 className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-black text-slate-800">{dashboardStats.avgProgress}%</p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">វឌ្ឍនភាពជាមធ្យម</p>
+                    <div className="w-24 bg-slate-100 h-1.5 rounded-full overflow-hidden mt-1">
+                      <div className="bg-teal-600 h-full" style={{ width: `${dashboardStats.avgProgress}%` }}></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                  <div className="p-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-100">
+                    <Clock className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">គម្រោងត្រៀមអនុវត្ត</p>
+                    <p className="text-2xl font-black text-amber-700">{dashboardStats.plannedCount}</p>
+                    <p className="text-[11px] text-slate-500 font-medium">Planned/Pending</p>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Distribution Charts */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                {/* Status Bar Chart */}
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+                  <h3 className="font-extrabold text-slate-800 text-xs uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">ស្ថានភាពជាក់ស្តែង</h3>
+                  <div className="space-y-4">
+                    
+                    <div>
+                      <div className="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+                        <span className="flex items-center"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-2"></span>បានបញ្ចប់ ({dashboardStats.completedCount})</span>
+                        <span>{dashboardStats.totalCount ? Math.round((dashboardStats.completedCount / dashboardStats.totalCount) * 100) : 0}%</span>
+                      </div>
+                      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div className="bg-emerald-500 h-full" style={{ width: `${dashboardStats.totalCount ? (dashboardStats.completedCount / dashboardStats.totalCount) * 100 : 0}%` }}></div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+                        <span className="flex items-center"><span className="w-2.5 h-2.5 rounded-full bg-sky-500 mr-2"></span>កំពុងអនុវត្ត ({dashboardStats.inProgressCount})</span>
+                        <span>{dashboardStats.totalCount ? Math.round((dashboardStats.inProgressCount / dashboardStats.totalCount) * 100) : 0}%</span>
+                      </div>
+                      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div className="bg-sky-500 h-full" style={{ width: `${dashboardStats.totalCount ? (dashboardStats.inProgressCount / dashboardStats.totalCount) * 100 : 0}%` }}></div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+                        <span className="flex items-center"><span className="w-2.5 h-2.5 rounded-full bg-slate-300 mr-2"></span>បានគ្រោងទុក ({dashboardStats.plannedCount})</span>
+                        <span>{dashboardStats.totalCount ? Math.round((dashboardStats.plannedCount / dashboardStats.totalCount) * 100) : 0}%</span>
+                      </div>
+                      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div className="bg-slate-300 h-full" style={{ width: `${dashboardStats.totalCount ? (dashboardStats.plannedCount / dashboardStats.totalCount) * 100 : 0}%` }}></div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                {/* Cost per District Distribution */}
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm lg:col-span-2">
+                  <h3 className="font-extrabold text-slate-800 text-xs uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">ការវិភាគតម្លៃប៉ាន់ស្មានតាមរដ្ឋបាលស្រុក (លានរៀល)</h3>
+                  <div className="space-y-3">
+                    {DISTRICTS.slice(0, 8).map(district => {
+                      const distCost = activities
+                        .filter(act => act.district === district)
+                        .reduce((sum, act) => sum + act.estimatedCostMillionRiels, 0);
+                      const maxCost = Math.max(...DISTRICTS.map(d => 
+                        activities.filter(act => act.district === d).reduce((s, act) => s + act.estimatedCostMillionRiels, 0)
+                      )) || 1;
+                      const percentage = (distCost / maxCost) * 100;
+
+                      return (
+                        <div key={district} className="space-y-1">
+                          <div className="flex justify-between text-xs font-semibold text-slate-700">
+                            <span>{district}</span>
+                            <span className="font-bold text-teal-800 font-mono">{distCost.toLocaleString()} លានរៀល</span>
+                          </div>
+                          <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                            <div className="h-full bg-teal-600" style={{ width: `${percentage}%` }}></div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          )}
+
+          {/* TAB 3: SMART INPUT FORM conforming to image_01a3dc.png */}
+          {activeTab === 'input' && (
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-6">
+              
+              <div className="border-b border-slate-100 pb-4">
+                <h2 className="text-lg font-black text-slate-950 flex items-center">
+                  <PlusCircle className="w-6 h-6 text-teal-600 mr-2" />
+                  {editingId ? "កែសម្រួលព័ត៌មានលម្អិតសកម្មភាព" : "បន្ថែមសកម្មភាពថ្មី ទៅក្នុងម៉ាទ្រីសយោង ម៉ាទ្រីស(ICPD)_2.xlsx"}
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  សូមបំពេញព័ត៌មានតាមលំដាប់ជួរឈរនៃតារាងផ្លូវការដែលបានបង្ហាញក្នុងរូបភាព <code>image_01a3dc.png</code>។
+                </p>
+              </div>
+
+              {currentUser.role === 'guest' ? (
+                <div className="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-300">
+                  <Lock className="w-12 h-12 text-rose-500 mx-auto mb-3" />
+                  <h4 className="font-extrabold text-slate-800">សូមចូលប្រើប្រព័ន្ធដើម្បីបន្ថែមសកម្មភាព</h4>
+                  <p className="text-xs text-slate-500 mt-1.5 mb-4">លោកអ្នកត្រូវប្រើប្រាស់គណនីមន្ត្រី ឬអ្នកគ្រប់គ្រងដើម្បីបំពេញសំណុំឯកសារនេះ។</p>
+                  <button
+                    onClick={handleOpenLoginModal}
+                    className="px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition-all shadow-md"
+                  >
+                    ចូលគណនីឥឡូវនេះ
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleAddOrUpdateRow} className="space-y-6">
+                  
+                  {/* Strategic Direction Selection */}
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1.5">ទិសដៅយុទ្ធសាស្ត្រយោង</label>
+                    <select 
+                      value={formInput.strategicDirectionId}
+                      onChange={(e) => setFormInput({...formInput, strategicDirectionId: e.target.value})}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white"
+                    >
+                      {STRATEGIC_DIRECTIONS.map(sd => (
+                        <option key={sd.id} value={sd.id}>{sd.title.substring(0, 100)}...</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Activity and Indicator Inputs */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1.5">សកម្មភាព *</label>
+                      <textarea 
+                        rows="3"
+                        placeholder="ឧ. ចូលរួមអនុវត្តយុទ្ធសាស្ត្រវិជ្ជមាន..."
+                        value={formInput.activityKh}
+                        onChange={(e) => setFormInput({...formInput, activityKh: e.target.value})}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        required
+                      ></textarea>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1.5">សូចនាករ *</label>
+                      <textarea 
+                        rows="3"
+                        placeholder="ឧ. ចំនួនស្ត្រីដែលទទួលបានការពង្រឹងសមត្ថភាព..."
+                        value={formInput.indicatorKh}
+                        onChange={(e) => setFormInput({...formInput, indicatorKh: e.target.value})}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        required
+                      ></textarea>
+                    </div>
+
+                  </div>
+
+                  {/* Coordinating Department and Unit */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1.5">ស្ថាប័នសម្របសម្រួល *</label>
+                      <select 
+                        value={formInput.coordinatingDept}
+                        onChange={(e) => setFormInput({...formInput, coordinatingDept: e.target.value})}
+                        disabled={currentUser.role === 'department'}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white disabled:bg-slate-50"
+                      >
+                        {DEPARTMENTS.map(dept => (
+                          <option key={dept} value={dept}>{dept}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1.5">ឯកតាសូចនាករ *</label>
+                      <input 
+                        type="text" 
+                        placeholder="ឧ. នាក់, លើក, ភាគរយ"
+                        value={formInput.unitKh}
+                        onChange={(e) => setFormInput({...formInput, unitKh: e.target.value})}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1.5">រដ្ឋបាលស្រុកអនុវត្ត</label>
+                      <select 
+                        value={formInput.district}
+                        onChange={(e) => setFormInput({...formInput, district: e.target.value})}
+                        disabled={currentUser.role === 'district'}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white disabled:bg-slate-50"
+                      >
+                        {DISTRICTS.map(dist => (
+                          <option key={dist} value={dist}>{dist}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                  </div>
+
+                  {/* Baseline and Milestone Targets */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1.5">តម្លៃលើកមុន ឆ្នាំ២០២៦ (Baseline)</label>
+                      <input 
+                        type="text" 
+                        placeholder="ឧ. ៥,០០០"
+                        value={formInput.baselineVal}
+                        onChange={(e) => setFormInput({...formInput, baselineVal: e.target.value})}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1.5">សរុបដល់ឆ្នាំ២០៣០</label>
+                      <input 
+                        type="text" 
+                        placeholder="ឧ. ២៥,០០០"
+                        value={formInput.totalTarget}
+                        onChange={(e) => setFormInput({...formInput, totalTarget: e.target.value})}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1.5">តម្លៃប៉ាន់ស្មាន (លានរៀល) *</label>
+                      <input 
+                        type="number" 
+                        placeholder="ឧ. 350"
+                        value={formInput.estimatedCostMillionRiels}
+                        onChange={(e) => setFormInput({...formInput, estimatedCostMillionRiels: e.target.value})}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        required
+                      />
+                    </div>
+
+                  </div>
+
+                  {/* Annual Target breakdown fields (2026-2030) */}
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <span className="text-[11px] font-bold text-slate-700 uppercase block mb-3">ការបែងចែកគោលដៅប្រចាំឆ្នាំ (២០២៦-២០៣០)</span>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                      
+                      {['y2026', 'y2027', 'y2028', 'y2029', 'y2030'].map((year) => (
+                        <div key={year}>
+                          <label className="block text-[10px] font-bold text-slate-500 mb-1">{year.replace('y', '')}</label>
+                          <input 
+                            type="text" 
+                            placeholder="គោលដៅ"
+                            value={formInput[year]}
+                            onChange={(e) => setFormInput({...formInput, [year]: e.target.value})}
+                            className="w-full px-2 py-1.5 border border-slate-300 rounded-lg text-xs text-center"
+                          />
+                        </div>
+                      ))}
+
+                    </div>
+                  </div>
+
+                  {/* Status and percentage indicators */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1.5">ស្ថានភាពអនុវត្ត</label>
+                      <select 
+                        value={formInput.status}
+                        onChange={(e) => setFormInput({...formInput, status: e.target.value})}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white"
+                      >
+                        <option value="planned">បានគ្រោងទុក (Planned)</option>
+                        <option value="in_progress">កំពុងដំណើរការ (In Progress)</option>
+                        <option value="completed">បានបញ្ចប់ (Completed)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1.5">វឌ្ឍនភាព (%) {formInput.progressPercent}%</label>
+                      <input 
+                        type="range" 
+                        min="0" 
+                        max="100" 
+                        value={formInput.progressPercent}
+                        onChange={(e) => setFormInput({...formInput, progressPercent: e.target.value})}
+                        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600 mt-3"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1.5">មន្ត្រីទទួលខុសត្រូវ</label>
+                      <input 
+                        type="text" 
+                        placeholder="ឈ្មោះមន្ត្រីបង្គោល"
+                        value={formInput.responsiblePerson}
+                        onChange={(e) => setFormInput({...formInput, responsiblePerson: e.target.value})}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      />
+                    </div>
+
+                  </div>
+
+                  {/* Submit action buttons */}
+                  <div className="flex justify-end space-x-3 pt-4 border-t border-slate-100">
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        setEditingId(null);
+                        setActiveTab('excel-view');
+                      }}
+                      className="px-4 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition-all"
+                    >
+                      បដិសេធ
+                    </button>
+                    <button 
+                      type="submit"
+                      className="px-5 py-2.5 bg-teal-700 hover:bg-teal-800 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-teal-700/10 flex items-center space-x-1"
+                    >
+                      <Save className="w-4 h-4" />
+                      <span>{editingId ? "រក្សាទុកការកែប្រែ" : "បញ្ចូលក្នុងតារាងយោង"}</span>
+                    </button>
+                  </div>
+
+                </form>
+              )}
+
+            </div>
+          )}
+
+          {/* TAB 4: PASSWORD AND CREDENTIALS MANAGEMENT (ADMIN AREA ONLY) */}
+          {}
+          {activeTab === 'settings' && (
+            <div className="space-y-6">
+              
+              {/* Access Protection Verification for UI Rendering */}
+              {currentUser.role !== 'admin' ? (
+                <div className="bg-white p-12 rounded-3xl border border-slate-200 shadow-xl text-center space-y-4 max-w-2xl mx-auto my-12">
+                  <div className="p-4 bg-rose-50 text-rose-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto border border-rose-100 shadow-inner">
+                    <Lock className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-lg font-black text-slate-800">សិទ្ធិត្រូវបានការពារ (Access Restricted)</h3>
+                  <p className="text-xs text-slate-500 leading-relaxed max-w-md mx-auto">
+                    គណនី និងលេខសម្ងាត់មន្ទីរ គឺមានតែ **លោក គឹម សុជាតិ (Super Admin - មន្ទីរផែនការ)** តែម្នាក់គត់ដែលអាចចូលបាន និងមានសិទ្ធិបង្កើត/គ្រប់គ្រង គណនី (Username) ព្រមទាំងលេខសម្ងាត់ (Password) សម្រាប់មន្ទីរវិស័យជំនាញ និងរដ្ឋបាលក្រុង/ស្រុក។
+                  </p>
+                  <div className="pt-4">
+                    <button
+                      onClick={() => setActiveTab('excel-view')}
+                      className="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition-all"
+                    >
+                      ត្រឡប់ទៅតារាងទិន្នន័យ
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                    <div className="flex items-center space-x-3">
+                      <span className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl border border-indigo-100">
+                        <Key className="w-6 h-6" />
+                      </span>
+                      <div>
+                        <h2 className="text-lg font-black text-slate-900">ផ្ទាំងបញ្ជាគ្រប់គ្រងគណនី & លេខសម្ងាត់ (ស្វ័យសិទ្ធិមន្ទីរផែនការ)</h2>
+                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                          ក្នុងនាមជា **Super Admin (លោក គឹម សុជាតិ)** លោកអ្នកមានសិទ្ធិពេញលេញក្នុងការបង្កើតកែប្រែគណនីមន្ត្រីបង្គោលតាមមន្ទីរវិស័យ និងក្រុង/ស្រុកទាំង ៨។
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ADMIN CONTROLS: Accounts & Password Creation */}
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    {/* 1. Password Generation & Account Creator Form */}
+                    <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4 h-fit">
+                      <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+                        <h3 className="font-extrabold text-slate-800 text-xs uppercase tracking-wider flex items-center">
+                          <Lock className="w-4 h-4 mr-1.5 text-indigo-600" />
+                          {editingUserId ? "កែសម្រួលគណនី" : "បង្កើតគណនី និងលេខសម្ងាត់"}
+                        </h3>
+                        {editingUserId && (
+                          <button 
+                            onClick={() => {
+                              setEditingUserId(null);
+                              setUserForm({
+                                name: "", role: "department", entity: "", district: DISTRICTS[0], department: DEPARTMENTS[0], username: "", password: "", status: "active", note: ""
+                              });
+                            }}
+                            className="text-[10px] text-rose-500 hover:underline font-bold"
+                          >
+                            បោះបង់កែប្រែ
+                          </button>
+                        )}
+                      </div>
+
+                      <form onSubmit={handleAddOrUpdateUser} className="space-y-3.5">
+                        
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-700 uppercase mb-1">ឈ្មោះមន្ត្រីបង្គោល *</label>
+                          <input 
+                            type="text" 
+                            placeholder="ឧ. លោក សុខ បញ្ញា"
+                            value={userForm.name}
+                            onChange={(e) => setUserForm({...userForm, name: e.target.value})}
+                            className="w-full px-3 py-1.8 border border-slate-300 rounded-lg text-xs"
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-700 uppercase mb-1">តួនាទី / កម្រិតសិទ្ធិ</label>
+                          <select 
+                            value={userForm.role}
+                            onChange={(e) => setUserForm({...userForm, role: e.target.value})}
+                            className="w-full px-3 py-1.8 border border-slate-300 rounded-lg text-xs bg-white"
+                          >
+                            <option value="department">មន្ទីរវិស័យជំនាញ (Department)</option>
+                            <option value="district">រដ្ឋបាលក្រុង/ស្រុក (District)</option>
+                            <option value="admin">អ្នកគ្រប់គ្រងជាន់ខ្ពស់ (Super Admin)</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-700 uppercase mb-1">ឈ្មោះស្ថាប័នផ្លូវការ *</label>
+                          <input 
+                            type="text" 
+                            placeholder="ឧ. មន្ទីរសុខាភិបាលខេត្តកំពង់ឆ្នាំង"
+                            value={userForm.entity}
+                            onChange={(e) => setUserForm({...userForm, entity: e.target.value})}
+                            className="w-full px-3 py-1.8 border border-slate-300 rounded-lg text-xs"
+                            required
+                          />
+                        </div>
+
+                        {userForm.role === 'district' && (
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-700 uppercase mb-1">ដែនរដ្ឋបាលស្រុក</label>
+                            <select 
+                              value={userForm.district}
+                              onChange={(e) => setUserForm({...userForm, district: e.target.value})}
+                              className="w-full px-3 py-1.8 border border-slate-300 rounded-lg text-xs bg-white"
+                            >
+                              {DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                            </select>
+                          </div>
+                        )}
+
+                        {userForm.role === 'department' && (
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-700 uppercase mb-1">វិស័យជំនាញ</label>
+                            <select 
+                              value={userForm.department}
+                              onChange={(e) => setUserForm({...userForm, department: e.target.value})}
+                              className="w-full px-3 py-1.8 border border-slate-300 rounded-lg text-xs bg-white"
+                            >
+                              {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
+                            </select>
+                          </div>
+                        )}
+
+                        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-700 uppercase mb-1">Username *</label>
+                            <input 
+                              type="text" 
+                              placeholder="ឧ. healthdept"
+                              value={userForm.username}
+                              onChange={(e) => setUserForm({...userForm, username: e.target.value})}
+                              className="w-full px-3 py-1.8 border border-slate-300 rounded-lg text-xs font-mono"
+                              disabled={!!editingUserId}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-700 uppercase mb-1">Password *</label>
+                            <div className="relative">
+                              <input 
+                                type="text" 
+                                placeholder="លេខសម្ងាត់"
+                                value={userForm.password}
+                                onChange={(e) => setUserForm({...userForm, password: e.target.value})}
+                                className="w-full pl-3 pr-8 py-1.8 border border-slate-300 rounded-lg text-xs font-mono font-bold text-indigo-900"
+                                required
+                              />
+                              <button
+                                type="button"
+                                onClick={handleGeneratePassword}
+                                className="absolute right-2 top-2 text-slate-400 hover:text-indigo-600"
+                                title="បង្កើតលេខសម្ងាត់ចៃដន្យ"
+                              >
+                                <RefreshCw className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center space-x-2 pt-2">
+                          <label className="text-[10px] font-bold text-slate-700">ស្ថានភាព៖</label>
+                          <label className="inline-flex items-center text-xs">
+                            <input 
+                              type="radio" 
+                              value="active" 
+                              checked={userForm.status === 'active'}
+                              onChange={() => setUserForm({...userForm, status: 'active'})}
+                              className="text-teal-600 focus:ring-teal-500" 
+                            />
+                            <span className="ml-1 text-slate-600 font-semibold">Active</span>
+                          </label>
+                          <label className="inline-flex items-center text-xs ml-3">
+                            <input 
+                              type="radio" 
+                              value="inactive" 
+                              checked={userForm.status === 'inactive'}
+                              onChange={() => setUserForm({...userForm, status: 'inactive'})}
+                              className="text-rose-600 focus:ring-rose-500" 
+                            />
+                            <span className="ml-1 text-slate-600 font-semibold">Inactive</span>
+                          </label>
+                        </div>
+
+                        <button
+                          type="submit"
+                          className="w-full mt-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-indigo-600/10 flex items-center justify-center space-x-1.5"
+                        >
+                          <UserPlus className="w-4 h-4" />
+                          <span>{editingUserId ? "រក្សាទុកការកែប្រែ" : "បង្កើតគណនីមន្ត្រីថ្មី"}</span>
+                        </button>
+
+                      </form>
+                    </div>
+
+                    {/* 2. Accounts List Grid (Department & District Passwords) */}
+                    <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm lg:col-span-2 space-y-4">
+                      <div className="border-b border-slate-100 pb-3 flex justify-between items-center">
+                        <h3 className="font-extrabold text-slate-800 text-xs uppercase tracking-wider flex items-center">
+                          <Users className="w-4.5 h-4.5 mr-1.5 text-indigo-600" />
+                          បញ្ជីគ្រប់គ្រងគណនី និងលេខសម្ងាត់មន្ត្រីបង្គោល ({usersDb.length})
+                        </h3>
+                        <span className="text-[10px] text-slate-400 font-medium">គ្រប់គ្រងដោយ៖ <strong className="text-indigo-800">Super Admin (គឹម សុជាតិ)</strong></span>
+                      </div>
+
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead>
+                            <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 text-[10px] uppercase">
+                              <th className="py-2.5 px-2">មន្ត្រីបង្គោល / ស្ថាប័ន</th>
+                              <th className="py-2.5 px-2"> Username</th>
+                              <th className="py-2.5 px-2"> លេខសម្ងាត់ (Password)</th>
+                              <th className="py-2.5 px-2"> សិទ្ធិ / ដែនរដ្ឋបាល</th>
+                              <th className="py-2.5 px-2 text-center">ស្ថានភាព</th>
+                              <th className="py-2.5 px-2 text-center">ជម្រើស</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100 text-slate-700 font-medium text-[11px]">
+                            {usersDb.map((user) => (
+                              <tr key={user.id} className="hover:bg-slate-50/50 transition-all">
+                                
+                                {/* Officer name and entity */}
+                                <td className="py-3 px-2">
+                                  <p className="font-bold text-slate-800">{user.name}</p>
+                                  <p className="text-[10px] text-slate-400 mt-0.5">{user.entity}</p>
+                                </td>
+
+                                {/* Username */}
+                                <td className="py-3 px-2 font-mono font-bold text-indigo-800">
+                                  {user.username}
+                                </td>
+
+                                {/* Password display / Mask */}
+                                <td className="py-3 px-2">
+                                  <div className="flex items-center space-x-1.5 font-mono font-bold text-indigo-950 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200/50 w-fit">
+                                    <Key className="w-3 h-3 text-indigo-400" />
+                                    <span>{user.password}</span>
+                                  </div>
+                                </td>
+
+                                {/* Role / Entity */}
+                                <td className="py-3 px-2">
+                                  <span className={`inline-block text-[9px] px-1.5 py-0.5 rounded font-bold ${
+                                    user.role === 'admin' ? 'bg-indigo-100 text-indigo-800' : 
+                                    user.role === 'district' ? 'bg-emerald-100 text-emerald-800' : 'bg-sky-100 text-sky-800'
+                                  }`}>
+                                    {user.role === 'admin' ? 'Admin' : user.role === 'district' ? 'ស្រុក' : 'មន្ទីរជំនាញ'}
+                                  </span>
+                                  <p className="text-[10px] text-slate-400 mt-0.5 font-mono">
+                                    {user.role === 'district' ? user.district : user.department}
+                                  </p>
+                                </td>
+
+                                {/* Status */}
+                                <td className="py-3 px-2 text-center">
+                                  <span className={`inline-block w-2 h-2 rounded-full ${user.status === 'active' ? 'bg-emerald-500' : 'bg-rose-400'}`}></span>
+                                  <span className="text-[10px] ml-1 text-slate-500 capitalize">{user.status}</span>
+                                </td>
+
+                                {/* Action Buttons */}
+                                <td className="py-3 px-2 text-center">
+                                  <div className="flex items-center justify-center space-x-1">
+                                    <button
+                                      onClick={() => handleEditUser(user)}
+                                      className="p-1 hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 rounded transition-all"
+                                      title="កែសម្រួលព័ត៌មានលម្អិត"
+                                    >
+                                      <Edit className="w-3.5 h-3.5" />
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteUser(user.id, user.name)}
+                                      className="p-1 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded transition-all"
+                                      title="លុបគណនី"
+                                      disabled={user.id === currentUser.id}
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+                                </td>
+
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Security Notice */}
+                      <div className="p-3.5 bg-amber-50 border border-amber-200/60 rounded-xl text-amber-900 flex items-start space-x-2">
+                        <ShieldAlert className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                        <p className="text-[11px] leading-relaxed text-amber-800 font-medium">
+                          <strong>កំណត់សុវត្ថិភាពទិន្នន័យ៖</strong> គណនីដែលត្រូវបានបង្កើតនៅក្នុងប្រព័ន្ធនេះ មានសិទ្ធិអាចកែសម្រួលគម្រោង និងសកម្មភាពបានតែទៅតាម វិស័យ ឬក្រុង/ស្រុក សាមីរបស់ខ្លួនប៉ុណ្ណោះ។ Admin អាចធ្វើការផ្លាស់ប្តូរលេខសម្ងាត់នេះគ្រប់ពេលដើម្បីធានាសុវត្ថិភាព។
+                        </p>
+                      </div>
+
+                    </div>
+
+                  </div>
+                </>
+              )}
+
+            </div>
+          )}
+
+        </main>
+      </div>
+
+      {/* FOOTER */}
+      <footer className="bg-slate-900 text-slate-400 text-xs py-10 border-t border-slate-800 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+          <p className="font-extrabold text-slate-300">
+            ប្រព័ន្ធគ្រប់គ្រងសូចនាករយុទ្ធសាស្ត្រ និងតារាងសកម្មភាពជាតិ ២០២៤-២០៣០ - គ្រប់គ្រងដោយមន្ទីរផែនការខេត្តកំពង់ឆ្នាំង
+          </p>
+          <p className="text-[11px] text-slate-500">
+            រចនាតម្រូវតាមទម្រង់ការងារ និងសន្លឹកកិច្ចការគំរូនៃឯកសារ <strong>ម៉ាទ្រីស(ICPD)_2.xlsx</strong> និងការណែនាំពីក្រឡាបញ្ជីក្នុងរូបភាព <strong>image_01a3dc.png</strong>
+          </p>
+          <div className="text-[10px] text-slate-600 font-mono mt-6">
+            &copy; ២០២៦ រក្សាសិទ្ធិគ្រប់យ៉ាងដោយមន្ទីរផែនការខេត្តកំពង់ឆ្នាំង
+          </div>
+        </div>
+      </footer>
+
+      {/* SECURE LOGIN MODAL */}
+      {}
+      {loginModalOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-100 overflow-hidden animate-zoom-in">
+            
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-teal-700 to-indigo-800 text-white p-5 flex justify-between items-center">
+              <div className="flex items-center space-x-2">
+                <Lock className="w-5 h-5 text-teal-300" />
+                <div>
+                  <h3 className="font-extrabold text-xs sm:text-sm">ចូលប្រើប្រាស់ប្រព័ន្ធផែនការថ្នាក់ក្រោមជាតិ</h3>
+                  <p className="text-[10px] text-slate-200">ផ្ទៀងផ្ទាត់គណនីមន្ត្រីសម្របសម្រួលដោយមន្ទីរផែនការខេត្តកំពង់ឆ្នាំង</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setLoginModalOpen(false)}
+                className="p-1.5 hover:bg-white/10 rounded-lg text-slate-200 transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body / Login Form */}
+            <form onSubmit={handleLoginSubmit} className="p-6 space-y-4">
+              
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex items-start space-x-2.5">
+                <Info className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                <div className="text-[11px] text-slate-600 leading-relaxed font-semibold">
+                  <p className="text-slate-800 font-bold mb-1 border-b pb-0.5 text-xs">គណនីសាកល្បង៖</p>
+                  <p>• Admin: <strong className="text-indigo-900 font-mono">admin / 123</strong> (គឹម សុជាតិ)</p>
+                  <p>• ស្រុករលាប្អៀរ: <strong className="text-indigo-900 font-mono">roleapier / 111</strong></p>
+                  <p>• ក្រុងកំពង់ឆ្នាំង: <strong className="text-indigo-900 font-mono">kpchhnang / 555</strong></p>
+                  <p>• មន្ទីរកិច្ចការនារី: <strong className="text-indigo-900 font-mono">womendept / 222</strong></p>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-700 uppercase mb-1.5">ឈ្មោះគណនី (Username)</label>
+                <input 
+                  type="text" 
+                  placeholder="វាយបញ្ចូលឈ្មោះគណនី"
+                  value={loginUsername}
+                  onChange={(e) => setLoginUsername(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500 font-mono"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-700 uppercase mb-1.5">លេខសម្ងាត់ (Password)</label>
+                <div className="relative">
+                  <input 
+                    type={showPassword ? "text" : "password"} 
+                    placeholder="វាយបញ្ចូលលេខសម្ងាត់"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    className="w-full pl-3 pr-10 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500 font-mono font-bold"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex justify-end space-x-2">
+                <button
+                  type="button"
+                  onClick={() => setLoginModalOpen(false)}
+                  className="px-4 py-2 border border-slate-300 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-50 transition-all"
+                >
+                  បដិសេធ
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-teal-700/10 flex items-center space-x-1"
+                >
+                  <Unlock className="w-4 h-4" />
+                  <span>ផ្ទៀងផ្ទាត់ & ចូលប្រព័ន្ធ</span>
+                </button>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
